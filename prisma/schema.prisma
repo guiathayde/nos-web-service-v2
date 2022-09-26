@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model InstitutionAddress {
+  id          String       @id @default(uuid())
+  institution Institution?
+
+  generalAddress String
+  lat            String
+  lon            String
+}
+
+model Item {
+  id          String @id @default(uuid())
+  name        String
+  imageId     String
+  imageURL    String
+  subcategory String
+  priority    Int
+
+  Institution   Institution? @relation(fields: [institutionId], references: [id])
+  institutionId String?
+}
+
+model LegalInfo {
+  id          String       @id @default(uuid())
+  institution Institution?
+
+  corporateName String
+  cnpj          String
+}
+
+model Institution {
+  id            String   @id @default(uuid())
+  deliverInfo   String
+  description   String
+  imageId       String
+  imageURL      String
+  galleryImages String[]
+
+  institutionAddress   InstitutionAddress @relation(fields: [InstitutionAddressId], references: [id])
+  InstitutionAddressId String             @unique
+
+  institutionName        String
+  institutionPhone       Int
+  institutionType        String
+  items                  Item[]
+  publicTypeId           String
+  quantity               String
+  responsiblePersonEmail String
+  responsiblePersonName  String
+  responsiblePersonPhone String
+  site                   String
+  workingDays            String
+  bankInfo               String
+  customNeed             String
+  customService          String
+  crowdfunding           String
+
+  legalInfo   LegalInfo @relation(fields: [legalInfoId], references: [id])
+  legalInfoId String    @unique
+
+  isVerified Boolean
+  createdAt  DateTime @default(now())
+}
+
+// role: ['Coordenador', 'Jurídico', 'Ações']
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  isAdmin   Boolean  @default(false)
+  role      String[]
+  createdAt DateTime @default(now())
+}
