@@ -1,0 +1,11 @@
+@id = 61cd1509363a2733fcbd6d9a
+
+###
+# Login
+post {{hostname}}/user/signin
+Content-Type: application/json
+
+{
+  "email": "{{$dotenv ADMIN_EMAIL}}",
+  "password": "{{$dotenv ADMIN_PASSWORD}}"
+}

@@ -29,7 +29,6 @@ export function ensureAuthenticated(
 
   try {
     const decoded = verify(token, auth.secret_token);
-    console.log(decoded);
 
     const { sub } = decoded as ITokenPayload;
 

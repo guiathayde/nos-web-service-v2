@@ -1,0 +1,111 @@
+@id = d30e888d-3ead-4ccd-914b-9054bf3bb35d
+
+# Get all
+get {{hostname}}/institution/all
+Authorization: Bearer {{token}}
+
+###
+# Create
+post {{hostname}}/institution/create
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=XXX
+
+--XXX
+Content-Disposition: form-data; name="data"
+Content-Type: text/plain
+
+{
+	"deliverInfo": "Possui frete",
+  "description": "A Comunidade, que faz parte da Vila Corbélia, está localizada na CIC e tem aproximadamente 350 famílias residentes. Foi recentemente reconstruída em parceria com a ONG TETO após um incêndio na região, e, atualmente, continua necessitando de doações.",
+  "generalAddress": "Estrada Velha do Barigui, 3426 - Cidade Industrial De Curitiba Curitiba - PR, 81450-020",
+  "lat": "-25.508250",
+  "lon": "-49.351710",
+  "institutionName": "29 de Março, Vila Corbélia",
+  "institutionPhone": 5541996440839,
+  "quantity": "350 famílias",
+  "responsiblePersonEmail": "juliana15almendro@gmail.com",
+  "responsiblePersonName": "Juliana",
+  "responsiblePersonPhone": "+55 (41) 99644-0839",
+  "site": "Site: www.techo.org/brasil/doar/",
+  "workingDays": "Horário a combinar",
+  "bankInfo": "Banco: Caixa Econômica Federal (104), Agência: 2204, Operação: 013, Conta Corrente: 00000399-8, Associação de Catadores de Materiais Recicláveis Novo Amanhecer, CNPJ: 05685.690/0001-83",
+  "customNeed": "",
+  "customService": "",
+  "crowdfunding": "",
+  "corporateName": "Vila Corbélia",
+  "cnpj": "93.497.882/0001-23",
+
+  "publicTypeId": "87e9aacd-32d4-4916-8757-07120564c691",
+  "institutionTypeId": "024b6bde-95c7-44ba-a7a7-52dbc56daced",
+
+  "itemsIds": ["ca48a435-9ad1-4537-accd-14ab662b6a59"],
+  "categoriesIds": ["4d59238f-cd20-4951-a792-220557fc8e45"]
+}
+
+--XXX
+Content-Disposition: form-data; name="profileImage"; filename="profileImage.jpeg"
+Content-Type: image/jpeg
+
+< ./profileImage.jpeg
+
+--XXX
+Content-Disposition: form-data; name="galleryImages"; filename="gallery1.jpeg"
+Content-Type: image/png
+
+< ./gallery1.jpeg
+
+--XXX
+Content-Disposition: form-data; name="galleryImages"; filename="gallery2.jpeg"
+Content-Type: image/png
+
+< ./gallery2.jpeg
+
+--XXX
+Content-Disposition: form-data; name="galleryImages"; filename="gallery3.jpeg"
+Content-Type: image/png
+
+< ./gallery3.jpeg
+
+--XXX--
+
+###
+# Update
+patch {{hostname}}/institution/{{id}}
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=XXX
+
+--XXX
+Content-Disposition: form-data; name="data"
+Content-Type: text/plain
+
+{
+  "institutionPhone": 5516991967841,
+  "responsiblePersonPhone": "+55 (16) 99196-7841",
+  "customNeed": "Cadeira Gamer, Cochão",
+  "customService": "Encanador",
+
+  "itemsIdsToInclude": ["7e56cc0a-90f4-43de-8b1b-b92bbb0f5fec"],
+  "itemsIdsToRemove": ["ca48a435-9ad1-4537-accd-14ab662b6a59"],
+
+  "categoriesIdsToInclude": ["04721069-fe3f-427b-a364-53972b80a674"],
+  "categoriesIdsToRemove": ["4d59238f-cd20-4951-a792-220557fc8e45"]
+}
+
+--XXX
+Content-Disposition: form-data; name="profileImage"; filename="profileImageUpdate.png"
+Content-Type: image/png
+
+< ./profileImageUpdate.png
+
+--XXX
+Content-Disposition: form-data; name="galleryImages"; filename="galleryUpdate.jpeg"
+Content-Type: image/jpeg
+
+< ./galleryUpdate.jpeg
+
+--XXX--
+
+###
+# Delete
+delete {{hostname}}/institution/{{id}}
+Authorization: Bearer {{token}}

@@ -1,0 +1,21 @@
+###
+# Create
+post {{hostname}}/public/create
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=XXX
+
+--XXX
+Content-Disposition: form-data; name="data"
+Content-Type: text/plain
+
+{
+  "name": "Famílias"
+}
+
+--XXX
+Content-Disposition: form-data; name="image"; filename="image.jpeg"
+Content-Type: image/png
+
+< ./image.jpeg
+
+--XXX--

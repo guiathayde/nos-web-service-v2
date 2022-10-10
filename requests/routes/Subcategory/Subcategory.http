@@ -1,0 +1,10 @@
+# Create
+post {{hostname}}/subcategory/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Sub Categoria 1",
+  "priority": 10,
+  "categoryId": "4d59238f-cd20-4951-a792-220557fc8e45"
+}

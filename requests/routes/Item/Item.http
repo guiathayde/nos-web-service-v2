@@ -1,0 +1,23 @@
+###
+# Create
+post {{hostname}}/item/create
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=XXX
+
+--XXX
+Content-Disposition: form-data; name="data"
+Content-Type: text/plain
+
+{
+  "name": "Álcool em gel 70",
+  "priority": 1,
+  "subcategoryId": "e5af609b-e6d2-41f6-9c79-12eeba05e20f"
+}
+
+--XXX
+Content-Disposition: form-data; name="image"; filename="image.jpeg"
+Content-Type: image/jpeg
+
+< ./image.jpeg
+
+--XXX--

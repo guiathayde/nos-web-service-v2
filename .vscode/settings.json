@@ -1,0 +1,16 @@
+{
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NjU0MTIyMjgsImV4cCI6MTY2NTQ5ODYyOCwic3ViIjoiNjk2ZGVlMTMtYzg3Ny00YWYxLWIwNDItYjM4YTJhYmVjMTA3In0.5869IimwO72L8prNUwriS56J1k1AxHm33xeELhvmIKk"
+    },
+    "Local env": {
+      "hostname": "http://localhost:3333/api"
+    },
+    "Development env": {
+      "hostname": "http://18.230.187.61/api"
+    },
+    "Production env": {
+      "hostname": "https://api.nossoolharsolidario.com.br/api"
+    }
+  }
+}

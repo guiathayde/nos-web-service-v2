@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,51 +7,69 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model InstitutionAddress {
-  id          String       @id @default(uuid())
-  institution Institution?
-
-  generalAddress String
-  lat            String
-  lon            String
-}
-
 model Item {
-  id          String @id @default(uuid())
-  name        String
-  imageId     String
-  imageURL    String
-  subcategory String
-  priority    Int
+  id       String @id @default(uuid())
+  name     String
+  imageId  String
+  imageUrl String
+  priority Int
 
-  Institution   Institution? @relation(fields: [institutionId], references: [id])
-  institutionId String?
+  institutions Institution[]
+
+  subcategory   Subcategory? @relation(fields: [subcategoryId], references: [id])
+  subcategoryId String?
 }
 
-model LegalInfo {
-  id          String       @id @default(uuid())
-  institution Institution?
+model Subcategory {
+  id       String @id @default(uuid())
+  name     String
+  priority Int
 
-  corporateName String
-  cnpj          String
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?   @unique
+
+  items Item[]
+}
+
+model Category {
+  id              String @id @default(uuid())
+  name            String
+  priority        Int
+  imageId         String
+  imageUrl        String
+  backgroundColor String
+
+  institutions  Institution[]
+  subcategories Subcategory[]
+}
+
+model Public {
+  id       String @id @default(uuid())
+  name     String
+  imageId  String
+  imageUrl String
+
+  Institutions Institution[]
+}
+
+model InstitutionType {
+  id       String @id @default(uuid())
+  name     String
+  imageId  String
+  imageUrl String
+
+  Institutions Institution[]
 }
 
 model Institution {
-  id            String   @id @default(uuid())
-  deliverInfo   String
-  description   String
-  imageId       String
-  imageURL      String
-  galleryImages String[]
-
-  institutionAddress   InstitutionAddress @relation(fields: [InstitutionAddressId], references: [id])
-  InstitutionAddressId String             @unique
-
+  id                     String   @id @default(uuid())
+  deliverInfo            String
+  description            String
+  generalAddress         String
+  lat                    String
+  lon                    String
   institutionName        String
   institutionPhone       Int
-  institutionType        String
-  items                  Item[]
-  publicTypeId           String
   quantity               String
   responsiblePersonEmail String
   responsiblePersonName  String
@@ -65,12 +80,87 @@ model Institution {
   customNeed             String
   customService          String
   crowdfunding           String
+  corporateName          String
+  cnpj                   String
+  isVerified             Boolean  @default(false)
+  createdAt              DateTime @default(now())
 
-  legalInfo   LegalInfo @relation(fields: [legalInfoId], references: [id])
-  legalInfoId String    @unique
+  profileImageId    String
+  profileImageUrl   String
+  galleryImagesIds  String[]
+  galleryImagesUrls String[]
 
-  isVerified Boolean
-  createdAt  DateTime @default(now())
+  publicType              Public                   @relation(fields: [publicTypeId], references: [id])
+  publicTypeId            String                   @unique
+  institutionType         InstitutionType          @relation(fields: [institutionTypeId], references: [id])
+  institutionTypeId       String                   @unique
+  institutionVerification InstitutionVerification?
+
+  items      Item[]
+  categories Category[]
+}
+
+// InstitutionVerification
+model StageOne {
+  id                String    @id @default(uuid())
+  user              User?     @relation(fields: [responsibleUserId], references: [id])
+  responsibleUserId String?   @unique
+  date              DateTime?
+  notes             String?
+  status            Int       @default(2)
+
+  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id])
+  institutionVerificationId String                  @unique
+}
+
+model StageTwo {
+  id String @id @default(uuid())
+
+  user              User?   @relation(fields: [responsibleUserId], references: [id])
+  responsibleUserId String? @unique
+
+  date   DateTime?
+  notes  String?
+  status Int       @default(2)
+
+  searchStateStatus Int     @default(2)
+  searchStateResult String?
+
+  searchFederalStatus Int     @default(2)
+  searchFederalResult String?
+
+  searchLaboristStatus Int     @default(2)
+  searchLaboristResult String?
+
+  searchUnionStatus Int     @default(2)
+  searchUnionResult String?
+
+  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id])
+  institutionVerificationId String                  @unique
+}
+
+model StaegeThree {
+  id                String    @id @default(uuid())
+  user              User?     @relation(fields: [responsibleUserId], references: [id])
+  responsibleUserId String?   @unique
+  date              DateTime?
+  notes             String?
+  status            Int       @default(2)
+  stageOneReview    Boolean   @default(false)
+  stageTwoReview    Boolean   @default(false)
+
+  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id])
+  institutionVerificationId String                  @unique
+}
+
+model InstitutionVerification {
+  id            String      @id @default(uuid())
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  institutionId String      @unique
+
+  stageOne   StageOne?
+  StageTwo   StageTwo?
+  stageThree StaegeThree?
 }
 
 // role: ['Coordenador', 'Jurídico', 'Ações']
@@ -82,4 +172,8 @@ model User {
   isAdmin   Boolean  @default(false)
   role      String[]
   createdAt DateTime @default(now())
+
+  StageOne    StageOne?
+  StageTwo    StageTwo?
+  StaegeThree StaegeThree?
 }
