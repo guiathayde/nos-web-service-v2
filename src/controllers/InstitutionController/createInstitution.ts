@@ -34,7 +34,10 @@ interface RequestBody {
 }
 
 interface NewInstitutionProps
-  extends Omit<RequestBody, 'itemsIds' | 'categoriesIds'> {
+  extends Omit<
+    RequestBody,
+    'publicTypeId' | 'institutionTypeId' | 'itemsIds' | 'categoriesIds'
+  > {
   profileImageId: string;
   profileImageUrl: string;
   galleryImagesIds: string[];
@@ -75,9 +78,13 @@ function cleanURL(url: string) {
 
 export async function createInstitution(request: Request, response: Response) {
   try {
-    const { itemsIds, categoriesIds, ...newInstitutionData } = JSON.parse(
-      request.body.data,
-    ) as RequestBody;
+    const {
+      publicTypeId,
+      institutionTypeId,
+      itemsIds,
+      categoriesIds,
+      ...newInstitutionData
+    } = JSON.parse(request.body.data) as RequestBody;
     const newInstitution: NewInstitutionProps = {
       ...newInstitutionData,
       profileImageId: '',
@@ -124,26 +131,42 @@ export async function createInstitution(request: Request, response: Response) {
       const institutionResponse = await prisma.institution.create({
         data: {
           ...newInstitution,
+          publicType: {
+            connect: { id: publicTypeId },
+          },
+          institutionType: {
+            connect: { id: institutionTypeId },
+          },
           items: {
             connect: itemsIds.map(id => ({ id })),
           },
           categories: {
             connect: categoriesIds.map(id => ({ id })),
           },
+          institutionVerification: {
+            create: {
+              stageOne: {
+                create: {},
+              },
+              stageTwo: {
+                create: {},
+              },
+              stageThree: {
+                create: {},
+              },
+            },
+          },
+        },
+        include: {
+          institutionType: true,
+          publicType: true,
+          categories: true,
+          items: true,
+          institutionVerification: true,
         },
       });
 
-      const institutionVerification =
-        await prisma.institutionVerification.create({
-          data: {
-            institutionId: institutionResponse.id,
-          },
-        });
-
-      return response.status(201).json({
-        institution: institutionResponse,
-        institutionVerification,
-      });
+      return response.status(201).json(institutionResponse);
     } catch (error) {
       console.error({ error });
       throw new AppError(`Error on create institution. ${error}`);

@@ -36,20 +36,6 @@ interface RequestBody {
   categoriesIdsToRemove?: string[];
 }
 
-interface UpdateInstitution
-  extends Omit<
-    RequestBody,
-    | 'itemsIdsToInclude'
-    | 'itemsIdsToRemove'
-    | 'categoriesIdsToInclude'
-    | 'categoriesIdsToRemove'
-  > {
-  profileImageId?: string;
-  profileImageUrl?: string;
-  galleryImagesIds?: string[];
-  galleryImagesUrls?: string[];
-}
-
 interface Images {
   profileImage: Express.Multer.File[] | undefined;
   galleryImages: Express.Multer.File[] | undefined;
@@ -61,6 +47,8 @@ export async function updateInstitutionById(
 ) {
   const { id } = request.params;
   const {
+    publicTypeId,
+    institutionTypeId,
     itemsIdsToInclude,
     itemsIdsToRemove,
     categoriesIdsToInclude,
@@ -119,6 +107,12 @@ export async function updateInstitutionById(
       profileImageUrl,
       galleryImagesIds,
       galleryImagesUrls,
+      publicType: {
+        connect: publicTypeId ? { id: publicTypeId } : undefined,
+      },
+      institutionType: {
+        connect: institutionTypeId ? { id: institutionTypeId } : undefined,
+      },
       items: {
         connect: itemsIdsToInclude?.map(itemId => ({ id: itemId })),
         disconnect: itemsIdsToRemove?.map(itemId => ({ id: itemId })),
@@ -131,6 +125,13 @@ export async function updateInstitutionById(
           id: categoryId,
         })),
       },
+    },
+    include: {
+      publicType: true,
+      institutionType: true,
+      items: true,
+      categories: true,
+      institutionVerification: true,
     },
   });
 

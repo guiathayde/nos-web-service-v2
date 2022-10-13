@@ -90,11 +90,12 @@ model Institution {
   galleryImagesIds  String[]
   galleryImagesUrls String[]
 
-  publicType              Public                   @relation(fields: [publicTypeId], references: [id])
-  publicTypeId            String                   @unique
-  institutionType         InstitutionType          @relation(fields: [institutionTypeId], references: [id])
-  institutionTypeId       String                   @unique
-  institutionVerification InstitutionVerification?
+  publicType                Public                  @relation(fields: [publicTypeId], references: [id])
+  publicTypeId              String                  @unique
+  institutionType           InstitutionType         @relation(fields: [institutionTypeId], references: [id])
+  institutionTypeId         String                  @unique
+  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id], onDelete: Cascade)
+  institutionVerificationId String                  @unique
 
   items      Item[]
   categories Category[]
@@ -109,14 +110,14 @@ model StageOne {
   notes             String?
   status            Int       @default(2)
 
-  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id])
+  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id], onDelete: Cascade)
   institutionVerificationId String                  @unique
 }
 
 model StageTwo {
   id String @id @default(uuid())
 
-  user              User?   @relation(fields: [responsibleUserId], references: [id])
+  user              User?   @relation(fields: [responsibleUserId], references: [id], onDelete: Cascade)
   responsibleUserId String? @unique
 
   date   DateTime?
@@ -149,17 +150,16 @@ model StaegeThree {
   stageOneReview    Boolean   @default(false)
   stageTwoReview    Boolean   @default(false)
 
-  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id])
+  institutionVerification   InstitutionVerification @relation(fields: [institutionVerificationId], references: [id], onDelete: Cascade)
   institutionVerificationId String                  @unique
 }
 
 model InstitutionVerification {
-  id            String      @id @default(uuid())
-  institution   Institution @relation(fields: [institutionId], references: [id])
-  institutionId String      @unique
+  id          String       @id @default(uuid())
+  institution Institution?
 
   stageOne   StageOne?
-  StageTwo   StageTwo?
+  stageTwo   StageTwo?
   stageThree StaegeThree?
 }
 

@@ -1,4 +1,4 @@
-@id = d30e888d-3ead-4ccd-914b-9054bf3bb35d
+@id = b327ba55-22c3-4785-b2ce-ed863704ccfd
 
 # Get all
 get {{hostname}}/institution/all

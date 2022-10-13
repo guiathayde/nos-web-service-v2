@@ -6,10 +6,10 @@ export async function getAllInstitutions(request: Request, response: Response) {
 
   const institutions = await prisma.institution.findMany({
     include: {
+      publicType: true,
+      institutionType: true,
       categories: true,
       items: true,
-      institutionType: true,
-      publicType: true,
       institutionVerification: true,
     },
   });
